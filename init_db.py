@@ -1,5 +1,31 @@
 #!/usr/bin/env python
 
+"""
+init_db.py
+
+Run this function to create or re-initialize an existing sqlite database for
+storing information about win probabilities for board configurations.
+"""
+
+"""
+Copyright 2012 Michael Bell
+
+This file is part of connectfour.
+
+connectfour is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+connectfour is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with connectfour.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import sqlite3 as sql
 
 db_name = "games.db"
@@ -8,8 +34,11 @@ table_name = "Knowledge"
 
 def init_db():
     """
-    Initializes the games.db database.
+    Initializes the games.db database. If a database does not exist, it will be
+    created.
     """
+
+    print "Initializing the " + db_name + " databse."
 
     con = sql.connect(db_name)
 
