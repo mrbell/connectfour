@@ -1,5 +1,33 @@
 # -*- coding: utf-8 *-*
 
+"""
+c4bot
+
+The connect four player classes, including AI and Human opponents. Subclass the
+C4Bot class to create your own player.
+"""
+
+"""
+Copyright 2012 Michael Bell
+
+This file is part of connectfour.
+
+connectfour is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+connectfour is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with connectfour.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
+import os
+
 import numpy as np
 import sqlite3 as sql
 import init_db
@@ -89,6 +117,11 @@ class BotA(C4Bot):
         Initialize the class. Sets the player number.
         """
         super(BotA, self).__init__(pnum)
+
+        if not os.path.isfile(init_db.db_name):
+            # create an empty DB if one doesn't already exist
+            init_db.init_db()
+
         self.con = sql.connect(self.db_name)
 
         # Don't care about synchronization. Runs WAY faster without
