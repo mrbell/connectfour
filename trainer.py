@@ -31,7 +31,7 @@ def trainer(niter):
             sys.stdout.flush()
             counter = 0
 
-        board = c4.main(c4.COMPUTER, c4.COMPUTER, True, False)
+        board = c4.main(c4.BOTA, c4.BOTA, True, False)
         victor = board.curr_player
 
         # Don't update anything in case of a draw
@@ -74,8 +74,6 @@ def trainer(niter):
                 # Compute new probabilities
                 # This is the posterior mean assuming a binomial dist. for the
                 # likelihood and a flat prior for the prob.
-                #prob1 = (special.beta(np1wins + 2, ngames - np1wins + 1) /
-                         #special.beta(np1wins + 1, ngames - np1wins + 1))
                 prob1 = (np1wins + 1.) / (ngames + 2.)
                 prob2 = 1. - prob1
 

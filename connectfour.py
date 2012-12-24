@@ -3,12 +3,14 @@
 import sys
 
 from board import Board
-from c4bot import BotA as Computer1
-from c4bot import Random as Computer2
-from c4bot import Human
+import c4bot
 
-HUMAN = 1
-COMPUTER = 0
+# Player types
+HUMAN = 0  # A Human player
+RANDOM = 1  # A computer opponent that makes random moves.
+BOTA = 2  # A dumb computer opponent, but it should be better than Random
+
+player_types = {HUMAN: c4bot.Human, RANDOM: c4bot.Random, BOTA: c4bot.BotA}
 
 
 def main(p1, p2, record=False, verbose=True):
@@ -27,15 +29,8 @@ def main(p1, p2, record=False, verbose=True):
 
     b = Board(record)
     players = []
-    if p1 == HUMAN:
-        players.append(Human(1))
-    else:
-        players.append(Computer1(1))
-
-    if p2 == HUMAN:
-        players.append(Human(2))
-    else:
-        players.append(Computer2(2))
+    players.append(player_types[p1](1))
+    players.append(player_types[p2](2))
 
     while True:
         if verbose:
@@ -72,21 +67,31 @@ def main(p1, p2, record=False, verbose=True):
     return b
 
 
+def print_player_types():
+    """
+    Prints the valid player types to the screen.
+    """
+    print ""
+    print "Player types:"
+    print "    0: Human player"
+    print "    1: Random computer player"
+    print "    2: BotA computer player"
+
+
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print "Please indicate the number of human players that will play."
+    if len(sys.argv) != 3:
+        print "Please indicate the players."
+        print "Usage: connectfour.py <p1> <p2>"
+        print_player_types()
         sys.exit(0)
-    nplayers = int(sys.argv[1])
-    if nplayers == 1:
-        ans = int(raw_input("Is the human player 1 or 2? "))
-        if ans == 1:
-            main(HUMAN, COMPUTER)
-        elif ans == 2:
-            main(COMPUTER, HUMAN)
-        else:
-            print "Invalid entry!"
-            sys.exit(0)
-    elif nplayers == 2:
-        main(HUMAN, HUMAN)
-    else:
-        main(COMPUTER, COMPUTER)
+    p1 = int(sys.argv[1])
+    p2 = int(sys.argv[2])
+
+    playertypes = player_types.keys()
+
+    if playertypes.count(p1) == 0 or playertypes.count(p2) == 0:
+        print "Invalid player type!"
+        print_player_types()
+        sys.exit(0)
+
+    main(p1, p2)

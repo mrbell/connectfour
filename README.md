@@ -5,9 +5,9 @@ human v. human, human v. computer, or computer v. computer matches.
 
 Run 
 
-    > ./connectfour.py <number of players> 
+    > ./connectfour.py
 
-to play.
+to get a help message indicating how to run the game.
 
 The motivation for this project was to create a sandbox for writing 
 machine learning algorithms to try to make a robust AI opponent. Write 
@@ -17,6 +17,11 @@ thing to play around with.
 
 This software is released under
 [GPLv3](http://www.gnu.org/licenses/gpl.html).
+
+Dependencies
+------------
+
+Just Python and Numpy.
 
 File Description
 ----------------

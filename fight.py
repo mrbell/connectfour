@@ -25,7 +25,7 @@ def fight(ntrials):
                 sys.stdout.flush()
                 counter = 0
 
-        result = c4.main(c4.COMPUTER, c4.COMPUTER, False, False)
+        result = c4.main(c4.BOTA, c4.RANDOM, False, False)
 
         if result.curr_player == B.Board.P1:
             p1wins += 1
