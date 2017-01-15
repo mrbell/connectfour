@@ -26,10 +26,10 @@ You should have received a copy of the GNU General Public License
 along with connectfour.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import os
-
 import numpy as np
+import os
 import sqlite3 as sql
+
 import init_db
 
 
@@ -37,8 +37,6 @@ class C4Bot(object):
     """
     The generic connect 4 player class.
     """
-
-    pnum = 1  # the player number
 
     def __init__(self, pnum):
         """

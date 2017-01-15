@@ -28,7 +28,7 @@ along with connectfour.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 
 import connectfour as c4
-import board as B
+from connectfour import board as B
 
 
 def fight(p1, p2, ntrials):

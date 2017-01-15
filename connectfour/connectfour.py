@@ -27,8 +27,8 @@ along with connectfour.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
 
-from board import Board
 import c4bot
+from board import Board
 
 # Player types
 HUMAN = 0  # A Human player

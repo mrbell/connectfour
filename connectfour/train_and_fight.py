@@ -2,10 +2,10 @@
 
 import sqlite3 as sql
 
-import trainer as T
-import fight as F
 import connectfour as c4
+import fight as F
 import init_db
+import trainer as T
 
 # initialize the database
 init_db.init_db()

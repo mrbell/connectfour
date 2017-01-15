@@ -49,14 +49,6 @@ class Board(object):
     NCOL = 7
     NROW = 6
 
-    # A NROWxNCOL numpy array that acts as the board
-    state = np.zeros((NROW, NCOL), dtype=int)
-    curr_player = P1  # Which player has the next move.
-    nmoves = 0  # How many moves have been played on this board instance
-    # optionally store all board configurations as a list of board IDs
-    state_record = []
-    record = False  # Store the board configuration record?
-
     def __init__(self, record=False):
         """
         Initialize a Board instance.
@@ -67,8 +59,6 @@ class Board(object):
         self.nmoves = 0
         self.state_record = []
         self.record = record
-
-        return
 
     def __repr__(self):
         """
@@ -86,7 +76,7 @@ class Board(object):
         print ""
         return "Next player to go: " + str(self.curr_player)
 
-    def make_move(self, col):
+    def make_move(self, move):
         """
         Makes a move for the current player, updating the board, changing the
         current player, and checking whether the game is over. If the game ends
@@ -94,7 +84,7 @@ class Board(object):
         current player in case of a draw.
 
         Args:
-            col: The column in which to add a piece.
+            move: The column in which to add a piece, 0 through (NCOL-1) going left to right across the board.
 
         Returns:
             result: returns a move state indicating the result of the move
@@ -110,10 +100,10 @@ class Board(object):
         if len(moves) == 0:
             self.curr_player = self.EMPTY
             return self.DRAW
-        elif moves.count(col) == 0:
+        elif moves.count(move) == 0:
             return self.ILLEGAL_MOVE
 
-        self.state = self.get_new_board(col)
+        self.state = self.get_new_board(move)
 
         self.nmoves += 1
 
