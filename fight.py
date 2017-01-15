@@ -67,6 +67,8 @@ def fight(p1, p2, ntrials):
     print "Player 1 won " + str(p1wins) + " games of out of " + \
         str(ntrials - draws) + " decisions."
 
+    return p1wins, draws
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:

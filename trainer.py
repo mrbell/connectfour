@@ -34,7 +34,7 @@ import connectfour as c4
 import init_db
 
 
-def trainer(niter):
+def trainer(niter, p1=None, p2=None):
     """
     A function to "train" the BotA connect four AI player. This will run a
     number of games of connect four where the bot plays against itself and
@@ -43,6 +43,12 @@ def trainer(niter):
 
     if not os.path.isfile(init_db.db_name):
         init_db.init_db()
+
+    if p1 is None:
+        p1 = c4.BOTA
+
+    if p2 is None:
+        p2 = c4.BOTA
 
     con = sql.connect(init_db.db_name)
 
