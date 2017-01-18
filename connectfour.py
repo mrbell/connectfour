@@ -26,6 +26,7 @@ along with connectfour.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import sys
+import os
 
 from board import Board
 import c4bot
@@ -98,9 +99,9 @@ def print_player_types():
     """
     print ""
     print "Player types:"
-    print "    0: Human player"
-    print "    1: Random computer player"
-    print "    2: BotA computer player"
+    print "    {:}: Human player".format(HUMAN)
+    print "    {:}: Random computer player".format(RANDOM)
+    print "    {:}: BotA computer player".format(BOTA)
 
 
 if __name__ == "__main__":
@@ -114,7 +115,7 @@ if __name__ == "__main__":
 
     playertypes = player_types.keys()
 
-    if playertypes.count(p1) == 0 or playertypes.count(p2) == 0:
+    if p1 not in player_types or p2 not in player_types:
         print "Invalid player type!"
         print_player_types()
         sys.exit(0)

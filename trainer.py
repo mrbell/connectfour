@@ -25,7 +25,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with connectfour.  If not, see <http://www.gnu.org/licenses/>.
 """
-
 import sqlite3 as sql
 import sys
 import os
@@ -54,7 +53,7 @@ def trainer(niter):
     counter = 0
 
     for i in range(niter):
-        if counter >= int(niter / 10.):
+        if counter >= int(niter / 100.):
             sys.stdout.write("*")
             sys.stdout.flush()
             counter = 0
@@ -63,6 +62,7 @@ def trainer(niter):
         victor = board.curr_player
 
         # Don't update anything in case of a draw
+        # TODO: Make this a fail state
         if victor == board.EMPTY:
             continue
 

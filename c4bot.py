@@ -38,8 +38,6 @@ class C4Bot(object):
     The generic connect 4 player class.
     """
 
-    pnum = 1  # the player number
-
     def __init__(self, pnum):
         """
         Sets the player number for the current class instance.
@@ -55,9 +53,8 @@ class C4Bot(object):
         Given the current board setup, make a move. Children must implement
         this method.
         """
-        raise Exception("C4Bot does not have a default move. Children must" +
-                        " implement this method!")
-        return None
+        raise NotImplemented("C4Bot does not have a default move. Children must" +
+                             " implement this method!")
 
 
 class Human(C4Bot):
@@ -177,6 +174,5 @@ class BotA(C4Bot):
         if len(selected_moves) == 0:
             return None
         else:
-            selected_move = selected_moves[np.random.randint(0,
-                                                         len(selected_moves))]
+            selected_move = selected_moves[np.random.randint(0, len(selected_moves))]
             return selected_move

@@ -74,7 +74,7 @@ class Board(object):
         """
         Print the board state to the screen as well as the next player to move.
         """
-
+        # TODO: Should be __str__
         print "Move number ", self.nmoves
         print ""
         head = "  "
@@ -110,7 +110,7 @@ class Board(object):
         if len(moves) == 0:
             self.curr_player = self.EMPTY
             return self.DRAW
-        elif moves.count(col) == 0:
+        elif col not in moves:
             return self.ILLEGAL_MOVE
 
         self.state = self.get_new_board(col)
@@ -166,13 +166,7 @@ class Board(object):
             moves: A list of ints, each being a column that can be played as
                 a valid move by the current player.
         """
-        moves = []
-
-        for i in range(self.NCOL):
-            if self._check_move(i):
-                moves.append(i)
-
-        return moves
+        return [i for i in range(self.NCOL) if self._check_move(i)]
 
     def get_board_id(self, board=None):
         """

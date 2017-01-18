@@ -42,3 +42,6 @@ nosetests.xml
 *.orig
 *.nja
 *.bak
+
+.idea/
+*.swp
