@@ -71,7 +71,7 @@ class Human(C4Bot):
         """
         Given the current board setup, make a move.
         """
-        move = int(raw_input('Enter move (0 to quit): ')) - 1
+        move = int(input('Enter move (0 to quit): ')) - 1
 
         return move
 

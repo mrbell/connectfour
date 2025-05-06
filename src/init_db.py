@@ -37,7 +37,7 @@ def init_db():
     created.
     """
 
-    print "Initializing the " + db_name + " databse."
+    print("Initializing the " + db_name + " databse.")
 
     con = sql.connect(db_name)
 

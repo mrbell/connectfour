@@ -75,15 +75,15 @@ class Board(object):
         Print the board state to the screen as well as the next player to move.
         """
         # TODO: Should be __str__
-        print "Move number ", self.nmoves
-        print ""
+        print("Move number ", self.nmoves)
+        print("")
         head = "  "
         for i in range(self.NCOL):
             head = head + str(i + 1) + " "
-        print head
-        print ""
-        print self.state
-        print ""
+        print(head)
+        print("")
+        print(self.state)
+        print("")
         return "Next player to go: " + str(self.curr_player)
 
     def make_move(self, col):

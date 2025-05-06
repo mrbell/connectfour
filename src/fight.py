@@ -64,15 +64,17 @@ def fight(p1, p2, ntrials):
     sys.stdout.write("\n")
     sys.stdout.flush()
 
-    print "Player 1 won " + str(p1wins) + " games of out of " + \
+    print(
+        "Player 1 won " + str(p1wins) + " games of out of " +
         str(ntrials - draws) + " decisions."
+    )
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print "Invalid number of arguments!"
-        print "Usage: ./fight.py <p1> <p2> <ngames>"
-        print "The players must be computer player types!"
+        print("Invalid number of arguments!")
+        print("Usage: ./fight.py <p1> <p2> <ngames>")
+        print("The players must be computer player types!")
         c4.print_player_types()
         sys.exit(0)
 
@@ -82,12 +84,12 @@ if __name__ == "__main__":
 
     playertypes = c4.player_types.keys()
     if playertypes.count(p1) == 0 or playertypes.count(p2) == 0:
-        print "Invalid player type!"
+        print("Invalid player type!")
         c4.print_player_types()
         sys.exit(0)
 
     if p1 == c4.HUMAN or p2 == c4.HUMAN:
-        print "Only computer players can be chosen."
+        print("Only computer players can be chosen.")
         c4.print_player_types()
         sys.exit(0)
 

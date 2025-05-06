@@ -60,35 +60,35 @@ def main(p1, p2, record=False, verbose=True):
 
     while True:
         if verbose:
-            print b
+            print(b)
         move = players[b.curr_player - 1].move(b)
         if move < 0:
             if verbose:
-                print "Thanks for playing!"
+                print("Thanks for playing!")
             break
 
         result = b.make_move(move)
 
         if result == b.VICTORY:
             if verbose:
-                print ""
-                print "-----------------------------------------"
-                print ""
-                print b
-                print "Player " + str(b.curr_player) + " wins!"
-                print ""
+                print("")
+                print("-----------------------------------------")
+                print("")
+                print(b)
+                print("Player " + str(b.curr_player) + " wins!")
+                print("")
             break
         elif result == b.DRAW:
             if verbose:
-                print "The game has ended in a draw."
+                print("The game has ended in a draw.")
             break
         elif result == b.ILLEGAL_MOVE:
-            print "Illegal move, try again."
+            print("Illegal move, try again.")
 
         if verbose:
-            print ""
-            print "-----------------------------------------"
-            print ""
+            print("")
+            print("-----------------------------------------")
+            print("")
 
     return b
 
@@ -97,17 +97,17 @@ def print_player_types():
     """
     Prints the valid player types to the screen.
     """
-    print ""
-    print "Player types:"
-    print "    {:}: Human player".format(HUMAN)
-    print "    {:}: Random computer player".format(RANDOM)
-    print "    {:}: BotA computer player".format(BOTA)
+    print("")
+    print("Player types:")
+    print("    {:}: Human player".format(HUMAN))
+    print("    {:}: Random computer player".format(RANDOM))
+    print("    {:}: BotA computer player".format(BOTA))
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print "Please indicate the players."
-        print "Usage: connectfour.py <p1> <p2>"
+        print("Please indicate the players.")
+        print("Usage: connectfour.py <p1> <p2>")
         print_player_types()
         sys.exit(0)
     p1 = int(sys.argv[1])
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     playertypes = player_types.keys()
 
     if p1 not in player_types or p2 not in player_types:
-        print "Invalid player type!"
+        print("Invalid player type!")
         print_player_types()
         sys.exit(0)
 

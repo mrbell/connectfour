@@ -119,6 +119,6 @@ def trainer(niter):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print "Must give the number of trials to run as an argument!"
+        print("Must give the number of trials to run as an argument!")
     else:
         trainer(int(sys.argv[1]))
