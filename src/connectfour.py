@@ -28,6 +28,7 @@ import curses
 
 from board import Board
 from player import Player, RandomPlayer
+from basic_ai import AIPlayer
 
 # Symbols for players and empty
 SYMBOLS = {
@@ -125,7 +126,7 @@ def main(stdscr):
 
     players = {
         Board.P1: HumanPlayer(Board.P1, stdscr),
-        Board.P2: RandomPlayer(Board.P2)
+        Board.P2: AIPlayer(Board.P2, 4)
     }
 
     while True:

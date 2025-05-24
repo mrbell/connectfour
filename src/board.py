@@ -28,6 +28,20 @@ along with connectfour.  If not, see <http://www.gnu.org/licenses/>.
 import numpy as np
 
 
+def infer_current_player_nmoves(board):
+    piece_counts = {board.P1: 0, board.P2: 0}
+
+    for row in board.state:
+        for col in row:
+            if col in piece_counts:
+                piece_counts[col] += 1
+    
+    nmoves = sum(piece_counts.values())
+    curr_player = board.P1 if piece_counts[board.P1] == piece_counts[board.P2] else board.P2
+
+    return curr_player, nmoves
+
+
 class Board(object):
     """
     The class defining a connect four board.
@@ -46,14 +60,20 @@ class Board(object):
     curr_player = P1  # Which player has the next move.
     nmoves = 0  # How many moves have been played on this board instance
 
-    def __init__(self):
+    def __init__(self, init_state=None):
         """
         Initialize a Board instance.
         """
 
-        self.state = np.zeros((self.NROW, self.NCOL), dtype=int)
-        self.curr_player = self.P1  # Can be inferred from nmoves, or just counting the number of pieces per player
-        self.nmoves = 0
+        if init_state is not None:
+            self.state = init_state
+        else:
+            self.state = np.zeros((self.NROW, self.NCOL), dtype=int)
+        self.curr_player, self.nmoves = infer_current_player_nmoves(self)
+
+    def clone(self):
+        state_copy = self.state.copy()
+        return Board(state_copy)
 
     def make_move(self, col):
         """
