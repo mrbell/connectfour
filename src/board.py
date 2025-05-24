@@ -3,12 +3,11 @@
 board.py
 
 The generic connect four board object. Encodes the rules of the connect four
-game (i.e. checks for legal moves and for victory conditions). It also provides
-a method for encoding board configurations with a unique ID.
+game (i.e. checks for legal moves and for victory conditions). 
 """
 
 """
-Copyright 2012 Michael Bell
+Copyright 2025 Michael Bell
 
 This file is part of connectfour.
 
@@ -33,13 +32,6 @@ class Board(object):
     """
     The class defining a connect four board.
     """
-
-    # Move states
-    ILLEGAL_MOVE = -1
-    VICTORY = 1
-    LEGAL_MOVE = 0
-    DRAW = 2
-
     # Player definitions and board states
     P1 = 1
     P2 = 2
@@ -53,38 +45,15 @@ class Board(object):
     state = np.zeros((NROW, NCOL), dtype=int)
     curr_player = P1  # Which player has the next move.
     nmoves = 0  # How many moves have been played on this board instance
-    # optionally store all board configurations as a list of board IDs
-    state_record = []
-    record = False  # Store the board configuration record?
 
-    def __init__(self, record=False):
+    def __init__(self):
         """
         Initialize a Board instance.
         """
 
         self.state = np.zeros((self.NROW, self.NCOL), dtype=int)
-        self.curr_player = self.P1
+        self.curr_player = self.P1  # Can be inferred from nmoves, or just counting the number of pieces per player
         self.nmoves = 0
-        self.state_record = []
-        self.record = record
-
-        return
-
-    def __repr__(self):
-        """
-        Print the board state to the screen as well as the next player to move.
-        """
-        # TODO: Should be __str__
-        print("Move number ", self.nmoves)
-        print("")
-        head = "  "
-        for i in range(self.NCOL):
-            head = head + str(i + 1) + " "
-        print(head)
-        print("")
-        print(self.state)
-        print("")
-        return "Next player to go: " + str(self.curr_player)
 
     def make_move(self, col):
         """
@@ -105,58 +74,20 @@ class Board(object):
                 DRAW = The game has ended in a draw, no legal moves left.
         """
 
-        moves = self.get_move_list()
-
-        if len(moves) == 0:
-            self.curr_player = self.EMPTY
-            return self.DRAW
-        elif col not in moves:
-            return self.ILLEGAL_MOVE
-
-        self.state = self.get_new_board(col)
-
-        self.nmoves += 1
-
-        if self.record:
-            self.state_record.append(self.get_board_id())
-
-        if self._check_for_victory():
-            return self.VICTORY
-        else:
-            if self.curr_player == self.P1:
-                self.curr_player = self.P2
-            else:
-                self.curr_player = self.P1
-
-            return self.LEGAL_MOVE
-
-    def get_new_board(self, col, board=None):
-        """
-        Given a column for the current player to put a piece into, return a new
-        board after having made the requested move.
-
-        Args:
-            col: An int for the column in which the current player should put
-                a piece.
-            board: A numpy array containing a board to update. If None, the
-                current instance board is used.
-
-        Returns:
-            newboard: A numpy array with an updated board.
-        """
-
-        if board is None:
-            board = np.array(self.state)
-
-        if col >= self.NCOL or col < 0:
+        if not self.is_legal_move(col):
             raise Exception("Illegal move requested!")
 
         for row in range(self.NROW - 1, -1, -1):
-            if board[row, col] == self.EMPTY:
-                board[row, col] = self.curr_player
+            if self.state[row, col] == self.EMPTY:
+                self.state[row, col] = self.curr_player
                 break
 
-        return board
+        self.nmoves += 1
+
+        if self.curr_player == self.P1:
+            self.curr_player = self.P2
+        else:
+            self.curr_player = self.P1
 
     def get_move_list(self):
         """
@@ -166,129 +97,9 @@ class Board(object):
             moves: A list of ints, each being a column that can be played as
                 a valid move by the current player.
         """
-        return [i for i in range(self.NCOL) if self._check_move(i)]
+        return [i for i in range(self.NCOL) if self.is_legal_move(i)]
 
-    def get_board_id(self, board=None):
-        """
-        Obtain the unique board ID for the given board array. The board ID is
-        the base-10 integer obtained by treating the flattened board as a
-        numeral in base-3.
-
-        Args:
-            board: A numpy array with the board to convert to an ID. If None,
-                the current board in the class instance is used.
-
-        Returns:
-            bid: The unique board ID.
-        """
-
-        if board is None:
-            board = self.state
-
-        fboard_list = board.flatten()
-        fboard_string = ''
-        for i in range(len(fboard_list)):
-            fboard_string += str(int(fboard_list[i]))
-        bid = int(fboard_string, base=3)
-
-        return bid
-
-    def get_board_from_id(self, bid):
-        """
-        Given a unique board ID, return the associated board array. The board
-        ID is a base-10 number, that when converted to a base-3 number repro-
-        duces the board configuration.
-
-        Args:
-            bid: The board ID to evaluate.
-
-        Returns:
-            board: A numpy array containing the associated board configuration.
-        """
-
-        # convert the decimal bid into a base 3 number, represented as a string
-        flat_board_string = np.base_repr(bid, base=3)
-        strlen = len(flat_board_string)
-        fboard = np.zeros(self.NROW * self.NCOL, dtype=int)
-        for i in range(strlen):
-            fboard[i] = flat_board_string[strlen - 1 - i]
-
-        board = np.reshape(np.flipud(fboard), (self.NROW, self.NCOL))
-
-        return board
-
-    def get_mirrored_board(self, board=None):
-        """
-        Obtain the mirrored board.
-
-        Args:
-            board: A numpy array with the board to mirror. If None
-                the current board in the class instance is used.
-
-        Returns:
-            mboard: A numpy array containing the mirrored board
-        """
-
-        if board is None:
-            board = self.state
-
-        mboard = np.fliplr(board)
-
-        return mboard
-
-    def get_mirrored_board_id(self, board=None):
-        """
-        Obtain the unique ID for the mirrored board.
-
-        Args:
-            board: A numpy array with the board to mirror and then convert to
-                an ID. If None the current board in the class instance is used.
-
-        Returns:
-            mbid: The mirrored board ID.
-        """
-
-        if board is None:
-            board = self.state
-
-        mboard = self.get_mirrored_board(board)
-        mbid = self.get_board_id(mboard)
-
-        return mbid
-
-    def get_mirrored_board_from_id(self, bid):
-        """
-        Given a board ID, return the mirrored board.
-
-        Args:
-            bid: The board ID to convert.
-
-        Returns:
-            mboard: A numpy array containing the mirrored board.
-        """
-
-        board = self.get_board_from_id(bid)
-        mboard = self.get_mirrored_board(board)
-
-        return mboard
-
-    def get_mirrored_id_from_id(self, bid):
-        """
-        Given a board ID, return the mirrored board.
-
-        Args:
-            bid: The board ID to convert.
-
-        Returns:
-            mboard: A numpy array containing the mirrored board.
-        """
-
-        mboard = self.get_mirrored_board_from_id(bid)
-        mbid = self.get_board_id(mboard)
-
-        return mbid
-
-    def _check_move(self, col):
+    def is_legal_move(self, col):
         """
         Checks whether a move is valid.
 
@@ -299,7 +110,7 @@ class Board(object):
             result: Bool stating whether the move is valid or not.
         """
 
-        if col >= self.NCOL:
+        if col >= self.NCOL or col < 0:
             return False
 
         if self.state[0, col] == self.EMPTY:
@@ -307,73 +118,76 @@ class Board(object):
         else:
             return False
 
-    def _check_for_victory(self):
+    def check_for_victory(self):
         """
         Check whether the current player has won with the given board
         configuration.
 
         Returns:
-            result: Bool indicating victory or not.
+            result: Player number for winning player, 0 if draw, or None if there is no winner yet.
         """
 
-        cp = self.curr_player
+        if len(self.get_move_list()) == 0:
+            return self.EMPTY
 
-        # check for vertical connections
-        for i in range(self.NCOL):
-            num = 0
-            for j in range(self.NROW):
-                if self.state[j, i] == cp:
-                    num += 1
-                else:
-                    num = 0
+        for cp in [self.P1, self.P2]:
 
-                if num == 4:
-                    return True
+            # check for vertical connections
+            for i in range(self.NCOL):
+                num = 0
+                for j in range(self.NROW):
+                    if self.state[j, i] == cp:
+                        num += 1
+                    else:
+                        num = 0
 
-        # check for horizontal connections
-        for i in range(self.NROW):
-            num = 0
-            for j in range(self.NCOL):
-                if self.state[i, j] == cp:
-                    num += 1
-                else:
-                    num = 0
+                    if num == 4:
+                        return cp
 
-                if num == 4:
-                    return True
+            # check for horizontal connections
+            for i in range(self.NROW):
+                num = 0
+                for j in range(self.NCOL):
+                    if self.state[i, j] == cp:
+                        num += 1
+                    else:
+                        num = 0
 
-        # check diagonal connections
-        # subtract 1 from col, but add to row to get to next diag entry
-        sdiags = [(0, 3), (0, 4), (0, 5), (0, 6), (1, 6), (2, 6)]
-        # add 1 to row and column to get to next diag entry
-        adiags = [(0, 3), (0, 2), (0, 1), (0, 0), (1, 0), (2, 0)]
+                    if num == 4:
+                        return cp
 
-        for i in range(len(sdiags)):
-            indx = sdiags[i]
-            num = 0
-            while indx[0] < self.NROW and indx[1] >= 0:
-                if self.state[indx] == cp:
-                    num += 1
-                else:
-                    num = 0
+            # check diagonal connections
+            # subtract 1 from col, but add to row to get to next diag entry
+            sdiags = [(0, 3), (0, 4), (0, 5), (0, 6), (1, 6), (2, 6)]
+            # add 1 to row and column to get to next diag entry
+            adiags = [(0, 3), (0, 2), (0, 1), (0, 0), (1, 0), (2, 0)]
 
-                if num == 4:
-                    return True
+            for i in range(len(sdiags)):
+                indx = sdiags[i]
+                num = 0
+                while indx[0] < self.NROW and indx[1] >= 0:
+                    if self.state[indx] == cp:
+                        num += 1
+                    else:
+                        num = 0
 
-                indx = (indx[0] + 1, indx[1] - 1)
+                    if num == 4:
+                        return cp
 
-        for i in range(len(adiags)):
-            indx = adiags[i]
-            num = 0
-            while indx[0] < self.NROW and indx[1] < self.NCOL:
-                if self.state[indx] == cp:
-                    num += 1
-                else:
-                    num = 0
+                    indx = (indx[0] + 1, indx[1] - 1)
 
-                if num == 4:
-                    return True
+            for i in range(len(adiags)):
+                indx = adiags[i]
+                num = 0
+                while indx[0] < self.NROW and indx[1] < self.NCOL:
+                    if self.state[indx] == cp:
+                        num += 1
+                    else:
+                        num = 0
 
-                indx = (indx[0] + 1, indx[1] + 1)
+                    if num == 4:
+                        return cp
 
-        return False
+                    indx = (indx[0] + 1, indx[1] + 1)
+
+        return None
