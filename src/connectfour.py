@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-
+# -*- coding: utf-8 *-*
 """
 connectfour.py
 
@@ -7,7 +6,7 @@ The connect four gameplay application.
 """
 
 """
-Copyright 2012 Michael Bell
+Copyright 2025 Michael Bell
 
 This file is part of connectfour.
 
