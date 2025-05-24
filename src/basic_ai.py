@@ -25,7 +25,7 @@ from player import Player
 WIN = 1000
 
 
-def heuristic(board: Board, maximizing_player: int) -> int:
+def heuristic(board: Board, player_number: int) -> int:
     """
     This logic isn't quite right. I should consider which player is next. If the next player
     has 3 in a row on a board, and is able to make a move to connect four, that should count 
@@ -36,12 +36,12 @@ def heuristic(board: Board, maximizing_player: int) -> int:
     """
     value = 0
 
-    minimizing_player = board.P2 if maximizing_player == board.P1 else board.P1
+    other_player_number = board.P2 if player_number == board.P1 else board.P1
 
-    directions = [(1, 0), (0, 1), (-1, 0), (0, -1), (1, 1), (1, -1), (-1, -1), (-1, 1)]
+    directions = [(1, 0), (0, 1), (1, 1), (1, -1)]
 
-    for player in [maximizing_player, minimizing_player]:
-        other_player = maximizing_player if player == minimizing_player else minimizing_player
+    for player in [player_number, other_player_number]:
+        other_player = player_number if player == other_player_number else other_player_number
         for row in range(board.NROW):
             for col in range(board.NCOL):
                 for direction in directions:
@@ -58,21 +58,21 @@ def heuristic(board: Board, maximizing_player: int) -> int:
                         if board.state[r, c] == player:
                             n += 1
                     if n == 3:
-                        value += 1 if player == maximizing_player else -1
+                        value += 1 if player == player_number else -1
 
-    return value
+    return value  # Because we count each 3 in a row twice
 
 
-def evaluate(board: Board, maximizing_player: int) -> int:
+def evaluate(board: Board, player_number: int) -> int:
     victor = board.check_for_victory()
     if victor == board.EMPTY:
         return 0
-    elif victor == maximizing_player:
+    elif victor == player_number:
         return WIN
     elif victor is not None:
         return -WIN 
     else:
-        return heuristic(board, maximizing_player)
+        return heuristic(board, player_number)
 
 
 class Node:
@@ -90,20 +90,27 @@ class Node:
         return children_nodes
 
 
-def minimax(node, depth, maximizingPlayer):
-    if depth == 0 or node.is_terminal():
-        return evaluate(node.board, maximizingPlayer)
+def other_player(player_num: int) -> int:
+    if player_num == Board.P1:
+        return Board.P2
+    else:
+        return Board.P1
 
-    if maximizingPlayer:
+
+def minimax(node, depth, is_maximizing_player, player_to_move):
+    if depth == 0 or node.is_terminal():
+        return evaluate(node.board, player_to_move)
+
+    if is_maximizing_player:
         maxEval = float('-inf')
         for child in node.children():
-            eval = minimax(child, depth - 1, False)
+            eval = minimax(child, depth - 1, False, player_to_move)
             maxEval = max(maxEval, eval)
         return maxEval
     else:
         minEval = float('inf')
         for child in node.children():
-            eval = minimax(child, depth - 1, True)
+            eval = minimax(child, depth - 1, True, player_to_move)
             minEval = min(minEval, eval)
         return minEval
 
@@ -124,7 +131,7 @@ class AIPlayer(Player):
             temp = board.clone()
             temp.make_move(move)
             node = Node(temp)
-            move_val = minimax(node, self.max_depth, self.player_num)
+            move_val = minimax(node, self.max_depth - 1, False, self.player_num)
             if move_val > best_move_val:
                 best_move_val = move_val
                 best_move = move
