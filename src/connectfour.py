@@ -116,18 +116,24 @@ class HumanPlayer(Player):
 
 
 def main(stdscr):
+
+    import random
+
     curses.curs_set(0)
     curses.start_color()
     curses.init_pair(COLOR_P1, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.init_pair(COLOR_P2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
     curses.init_pair(COLOR_EMPTY, curses.COLOR_WHITE, curses.COLOR_BLACK)
 
+    player_types = [
+        lambda x: HumanPlayer(x, stdscr), 
+        lambda x: AIPlayer(x, 4)
+    ]
+    random.shuffle(player_types)
+
     b = Board()
 
-    players = {
-        Board.P1: HumanPlayer(Board.P1, stdscr),
-        Board.P2: AIPlayer(Board.P2, 4)
-    }
+    players = {k: v(k) for k, v in zip([Board.P1, Board.P2], player_types)}
 
     while True:
         draw_board(stdscr, b)

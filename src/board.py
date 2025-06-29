@@ -77,21 +77,14 @@ class Board(object):
 
     def make_move(self, col):
         """
-        Makes a move for the current player, updating the board, changing the
-        current player, and checking whether the game is over. If the game ends
-        the current player indicates the victor. An EMPTY player is set as the
-        current player in case of a draw.
+        Makes a move for the current player, updating the board, and changing the
+        current player.
 
         Args:
             col: The column in which to add a piece.
 
         Returns:
-            result: returns a move state indicating the result of the move
-                VICTORY = The current player won with the move
-                ILLEGAL_MOVE = The requested move is invalid
-                LEGAL_MOVE = The requested move is valid, the board has been
-                    updated and the current player changed.
-                DRAW = The game has ended in a draw, no legal moves left.
+            None
         """
 
         if not self.is_legal_move(col):
@@ -147,6 +140,7 @@ class Board(object):
             result: Player number for winning player, 0 if draw, or None if there is no winner yet.
         """
 
+        # Check for draw
         if len(self.get_move_list()) == 0:
             return self.EMPTY
 

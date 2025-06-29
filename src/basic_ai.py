@@ -22,17 +22,41 @@ from board import Board
 from player import Player
 
 
-WIN = 1000
+WIN = 10000
+
+
+class Slots:
+    '''A struct used in the heuristic function.'''
+    PIECE = 1  # A space filled with a piece
+    VOID = -1  # An empty space that is not immediately fillable
+    GAP = 0    # An empty space that is immediately fillable
+
+
+def new_counts():
+    return {Slots.PIECE: 0, Slots.VOID: 0, Slots.GAP: 0}    
 
 
 def heuristic(board: Board, player_number: int) -> int:
     """
-    This logic isn't quite right. I should consider which player is next. If the next player
-    has 3 in a row on a board, and is able to make a move to connect four, that should count 
-    much more strongly than if you have 3 in a row but don't have the next move. However, 
-    depending on recursion depth this evaluation function would still get to the right answer
-    I think. So maybe it's fine. The minimax recursion should handle looking into the future.
-    This function just provides a snapshot evaluation.
+    Given a board instance and the players position to be evaluated, return an evaluation of the board 
+    state, with a positive number meaning the board is better for the given player and a negative number
+    meaning it is better for the opponent. Higher absolute values indicate a stronger position.
+
+    The evaluation works as follows:
+
+    Iterate over all sets of 4 spots on the board, any of which could eventually be the winning sequence.
+    In a set of 4 contiguous slots, it cannot ever be a winning sequence if one of the opponents pieces 
+    occupies a slot. In this case the sequence is not assigned any value. Otherwise the sequence could 
+    eventually be a winning sequence. Assign points depending on the number of pices/empty slots in the 
+    sequence, 
+
+    - +5 for 2 pieces 
+	- +20 for 3 in a row, with the empty spot not yet reachable
+	- +50 for 3 in a row, with the empty spot reachable
+
+    For sequences like GPPPG (G being a gap, P being a piece) this would produce 2 sequences of 
+    3 in a row with a gap, so would count twice as much as a similar sequence lik GPPPO (where O 
+    is an opponents piece).
     """
     value = 0
 
@@ -42,25 +66,39 @@ def heuristic(board: Board, player_number: int) -> int:
 
     for player in [player_number, other_player_number]:
         other_player = player_number if player == other_player_number else other_player_number
+        modifier = 1 if player == player_number else -1
         for row in range(board.NROW):
             for col in range(board.NCOL):
                 for direction in directions:
-                    n = 0
+                    counts = new_counts()
+                    is_invalid = False
                     for i in range(4):
                         r = row + direction[0] * i
                         c = col + direction[1] * i
                         if r < 0 or c < 0 or r >= board.NROW or c >= board.NCOL:
-                            n = 0
+                            is_invalid = True
                             break
                         if board.state[r, c] == other_player:
-                            n = 0
+                            is_invalid = True
                             break 
                         if board.state[r, c] == player:
-                            n += 1
-                    if n == 3:
-                        value += 1 if player == player_number else -1
+                            counts[Slots.PIECE] += 1
+                        elif r == 0 or board.state[r - 1, c] != board.EMPTY:
+                            counts[Slots.GAP] += 1
+                        else:
+                            counts[Slots.VOID] += 1
+                        
+                    if is_invalid:
+                        continue
 
-    return value  # Because we count each 3 in a row twice
+                    if counts[Slots.PIECE] == 2:
+                        value += modifier * 5
+                    elif counts[Slots.PIECE] == 3 and counts[Slots.VOID] == 1:
+                        value += modifier * 20
+                    elif counts[Slots.PIECE] == 3 and counts[Slots.GAP] == 1:
+                        value += modifier * 50
+
+    return value 
 
 
 def evaluate(board: Board, player_number: int) -> int:
@@ -76,9 +114,11 @@ def evaluate(board: Board, player_number: int) -> int:
 
 
 class Node:
+    '''A node in the tree of board states explored with minimax'''
     def __init__(self, board: Board):
         self.board = board
     def is_terminal(self):
+        '''A winning board state has no children.'''
         return self.board.check_for_victory() is not None
     def children(self):
         children_nodes = []
@@ -97,22 +137,21 @@ def other_player(player_num: int) -> int:
         return Board.P1
 
 
-def minimax(node, depth, is_maximizing_player, player_to_move):
+def minimax(node, depth, is_maximizing_player, maximizing_player):
+    '''
+    Recursively explore all board states to a given depth.
+    '''
     if depth == 0 or node.is_terminal():
-        return evaluate(node.board, player_to_move)
+        return evaluate(node.board, maximizing_player)
 
-    if is_maximizing_player:
-        maxEval = float('-inf')
-        for child in node.children():
-            eval = minimax(child, depth - 1, False, player_to_move)
-            maxEval = max(maxEval, eval)
-        return maxEval
-    else:
-        minEval = float('inf')
-        for child in node.children():
-            eval = minimax(child, depth - 1, True, player_to_move)
-            minEval = min(minEval, eval)
-        return minEval
+    ext_val = float('-inf') if is_maximizing_player else float('inf')
+    ext_fn = max if is_maximizing_player else min
+
+    for child in node.children():
+        val = minimax(child, depth - 1, not is_maximizing_player, maximizing_player)
+        ext_val = ext_fn(ext_val, val)
+
+    return ext_val
 
 
 class AIPlayer(Player):
@@ -127,11 +166,17 @@ class AIPlayer(Player):
         best_move_val = -100000000
         best_move = None
 
+        def inherent_move_val(move):
+            # Add points for moves that are closer to the center 
+            # of the board 
+            return min(move, board.NCOL - move - 1)
+
         for move in moves:
             temp = board.clone()
             temp.make_move(move)
             node = Node(temp)
             move_val = minimax(node, self.max_depth - 1, False, self.player_num)
+            move_val += inherent_move_val(move)
             if move_val > best_move_val:
                 best_move_val = move_val
                 best_move = move
