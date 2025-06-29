@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connect Four - Web</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Connect Four</h1>
+    <form action="/new_game" method="post">
+        <label>Player 1:
+            <select name="p1">
+                <option value="human">Human</option>
+                <option value="ai">AI</option>
+                <option value="random">Random</option>
+            </select>
+        </label>
+        <label>Player 2:
+            <select name="p2">
+                <option value="human">Human</option>
+                <option value="ai">AI</option>
+                <option value="random">Random</option>
+            </select>
+        </label>
+        <button type="submit">Start Game</button>
+    </form>
+</body>
+</html>

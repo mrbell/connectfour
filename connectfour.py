@@ -26,9 +26,9 @@ along with connectfour.  If not, see <http://www.gnu.org/licenses/>.
 
 import curses
 
-from board import Board
-from player import Player, RandomPlayer
-from basic_ai import AIPlayer
+from src.board import Board
+from src.player import Player, RandomPlayer
+from src.basic_ai import AIPlayer
 
 # Symbols for players and empty
 SYMBOLS = {
@@ -125,9 +125,11 @@ def main(stdscr):
     curses.init_pair(COLOR_P2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
     curses.init_pair(COLOR_EMPTY, curses.COLOR_WHITE, curses.COLOR_BLACK)
 
+    AI_DEPTH = 4
+
     player_types = [
         lambda x: HumanPlayer(x, stdscr), 
-        lambda x: AIPlayer(x, 4)
+        lambda x: AIPlayer(x, AI_DEPTH)
     ]
     random.shuffle(player_types)
 

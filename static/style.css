@@ -1,0 +1,88 @@
+body {
+    font-family: sans-serif;
+    background: #f8f8f8;
+    text-align: center;
+}
+#game-board {
+    display: inline-block;
+    margin: 20px auto;
+    background: #222;
+    padding: 30px;
+    border-radius: 14px;
+    font-size: 1.25em;
+}
+.c4-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0 auto;
+}
+.c4-table td {
+    padding: 0;
+}
+.cell {
+    width: 50px;
+    height: 50px;
+    display: block;
+    margin: 0 auto;
+    font-size: 2.5em;
+    vertical-align: middle;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    line-height: 50px;
+    transition: box-shadow 0.2s, background 0.2s;
+    border: 2px solid #bbb;
+    text-align: center;
+}
+.cell.p1 { color: red; border-color: #d33; }
+.cell.p2 { color: gold; border-color: #cc0; }
+.cell.empty { color: #bbb; }
+.cell.clickable, .cell.clickable:hover {
+    background: #e0f7fa;
+    box-shadow: 0 0 8px #00bcd4;
+}
+.cell.clickable:hover {
+    background: #b2ebf2;
+}
+.cell.hover-cell {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    font-size: 2.5em;
+    height: 50px;
+    width: 50px;
+    line-height: 50px;
+    margin: 0 auto;
+    pointer-events: auto;
+    user-select: none;
+    text-align: center;
+}
+#status {
+    margin: 20px;
+    font-size: 1.2em;
+}
+#legend {
+    margin: 18px auto 10px auto;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 1.1em;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.legend-piece {
+    width: 28px;
+    height: 28px;
+    display: inline-block;
+    border-radius: 50%;
+    font-size: 1.5em;
+    text-align: center;
+    line-height: 28px;
+    margin-right: 2px;
+}
+.legend-piece.p1 { color: red; }
+.legend-piece.p2 { color: gold; }

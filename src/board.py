@@ -55,11 +55,6 @@ class Board(object):
     NCOL = 7
     NROW = 6
 
-    # A NROWxNCOL numpy array that acts as the board
-    state = np.zeros((NROW, NCOL), dtype=int)
-    curr_player = P1  # Which player has the next move.
-    nmoves = 0  # How many moves have been played on this board instance
-
     def __init__(self, init_state=None):
         """
         Initialize a Board instance.

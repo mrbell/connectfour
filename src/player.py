@@ -19,6 +19,7 @@ along with connectfour.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import numpy as np
+from src.board import Board  # update for absolute import if needed
 
 
 class Player:

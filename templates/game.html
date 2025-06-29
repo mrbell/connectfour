@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connect Four Game</title>
+    <link rel="stylesheet" href="/static/style.css?v=20250629b">
+    <script src="/static/game.js?v=20250629b"></script>
+</head>
+<body>
+    <h1>Connect Four</h1>
+    <div id="legend">
+        <span class="legend-item"><span class="legend-piece p1">●</span> Player 1 (Red)</span>
+        <span class="legend-item"><span class="legend-piece p2">○</span> Player 2 (Gold)</span>
+    </div>
+    <div id="game-board"></div>
+    <div id="status"></div>
+    <button onclick="window.location.href='/'">New Game</button>
+    <script>
+        const boardData = {{ board|tojson }};
+        const p1Type = "{{ p1_type }}";
+        const p2Type = "{{ p2_type }}";
+        window.startGame(boardData, p1Type, p2Type);
+    </script>
+</body>
+</html>
