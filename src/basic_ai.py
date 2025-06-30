@@ -154,6 +154,34 @@ def minimax(node, depth, is_maximizing_player, maximizing_player):
     return ext_val
 
 
+def alpha_beta(node, depth, alpha, beta, is_maximizing_player, maximizing_player):
+    """
+    Recursively explore all board states to a given depth, pruning using the alpha-beta
+    pruning algorithm.
+    """
+    if depth == 0 or node.is_terminal():
+        return evaluate(node.board, maximizing_player)
+    
+    if is_maximizing_player:
+        max_eval = float('-inf')
+        for child in node.children():
+            eval = alpha_beta(child, depth - 1, alpha, beta, False, maximizing_player)
+            max_eval = max(eval, max_eval)
+            alpha = max(eval, alpha)
+            if beta <= alpha:
+                break
+        return max_eval
+    else:
+        min_eval = float('inf')
+        for child in node.children():
+            eval = alpha_beta(child, depth - 1, alpha, beta, True, maximizing_player)
+            min_eval = min(eval, min_eval)
+            beta = min(eval, beta)
+            if beta <= alpha:
+                break
+        return min_eval
+
+
 class AIPlayer(Player):
 
     def __init__(self, player_num: int, max_depth: int):
@@ -175,7 +203,15 @@ class AIPlayer(Player):
             temp = board.clone()
             temp.make_move(move)
             node = Node(temp)
-            move_val = minimax(node, self.max_depth - 1, False, self.player_num)
+            # move_val = minimax(node, self.max_depth - 1, False, self.player_num)
+            move_val = alpha_beta(
+                node, 
+                self.max_depth - 1, 
+                float('-inf'), 
+                float('inf'),
+                False,
+                self.player_num
+            )
             move_val += inherent_move_val(move)
             if move_val > best_move_val:
                 best_move_val = move_val

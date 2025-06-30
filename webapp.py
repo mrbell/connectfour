@@ -14,7 +14,7 @@ PLAYER_TYPES = {
     'ai': AIPlayer
 }
 
-AI_DEPTH = 4
+AI_DEPTH = 5
 
 # Helper to serialize the board state for the frontend
 def board_to_dict(board):
